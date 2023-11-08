@@ -13,7 +13,7 @@ use skystore_rust_client::apis::default_api as apis;
 use skystore_rust_client::models;
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
-use std::time::SystemTime;
+use std::time::{SystemTime, Instant};
 use tracing::error;
 
 pub struct SkyProxy {
@@ -629,6 +629,8 @@ impl S3 for SkyProxy {
         &self,
         req: S3Request<GetObjectInput>,
     ) -> S3Result<S3Response<GetObjectOutput>> {
+        // Start timer for latency metric
+        let start_time = Instant::now();
         let bucket = req.input.bucket.clone();
         let key = req.input.key.clone();
 
@@ -736,6 +738,22 @@ impl S3 for SkyProxy {
                             tag_count: get_resp.output.tag_count,
                             ..Default::default()
                         });
+
+                        let read_latency = start_time.elapsed().as_secs_f32();
+
+                        // Call api to record latency
+                        let _record_metrics_response = apis::record_metrics(
+                            &self.dir_conf,
+                            models::RecordMetricsRequest {
+                                client_region: self.client_from_region.clone(),
+                                requested_region: location.region.clone(),
+                                operation: "read".to_owned(),
+                                latency: read_latency,
+                                object_size: location.size.unwrap_or_default() as u32,
+                            },
+                        )
+                        .await;
+
                         return Ok(response);
                     } else {
                         return self
@@ -750,6 +768,21 @@ impl S3 for SkyProxy {
                             .await;
                     }
                 } else {
+                    let read_latency = start_time.elapsed().as_secs_f32();
+
+                    // Call api to record latency
+                    let _record_metrics_response = apis::record_metrics(
+                        &self.dir_conf,
+                        models::RecordMetricsRequest {
+                            client_region: self.client_from_region.clone(),
+                            requested_region: location.region.clone(),
+                            operation: "read".to_owned(),
+                            latency: read_latency,
+                            object_size: location.size.unwrap_or_default() as u32,
+                        },
+                    )
+                    .await;
+
                     return self
                         .store_clients
                         .get(&location.tag)
@@ -774,6 +807,9 @@ impl S3 for SkyProxy {
         &self,
         req: S3Request<PutObjectInput>,
     ) -> S3Result<S3Response<PutObjectOutput>> {
+        // Start timer for latency metric
+        let start_time = Instant::now();
+
         // Idempotent PUT
         let locator = self
             .locate_object(req.input.bucket.clone(), req.input.key.clone())
@@ -802,6 +838,10 @@ impl S3 for SkyProxy {
 
         let mut tasks = tokio::task::JoinSet::new();
         let locators = start_upload_resp.locators;
+        let region = match locators.first() {
+            Some(loc) => loc.region.clone(),
+            None => String::new(),
+        };
         let request_template = clone_put_object_request(&req.input, None);
         let input_blobs = split_streaming_blob(req.input.body.unwrap(), locators.len());
 
@@ -867,6 +907,23 @@ impl S3 for SkyProxy {
                     e_tag
                 });
             });
+
+        let write_latency = start_time.elapsed().as_secs_f32();
+
+        // Call api to record latency (only if locator exists)
+        if !region.is_empty() {
+            let _record_metrics_response = apis::record_metrics(
+                &self.dir_conf,
+                models::RecordMetricsRequest {
+                    client_region: self.client_from_region.clone(),
+                    requested_region: region,
+                    operation: "write".to_owned(),
+                    latency: write_latency,
+                    object_size: req.input.content_length.unwrap_or_default() as u32,
+                },
+            )
+            .await;
+        }
 
         let mut e_tags = Vec::new();
         while let Some(Ok(e_tag)) = tasks.join_next().await {

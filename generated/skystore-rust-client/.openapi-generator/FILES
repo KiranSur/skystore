@@ -23,6 +23,9 @@ docs/HeadObjectRequest.md
 docs/HeadObjectResponse.md
 docs/HealthcheckResponse.md
 docs/HttpValidationError.md
+docs/ListMetricsObject.md
+docs/ListMetricsRequest.md
+docs/ListMetricsResponse.md
 docs/ListObjectRequest.md
 docs/ListPartsRequest.md
 docs/LocateBucketRequest.md
@@ -38,6 +41,7 @@ docs/PatchUploadIsCompleted.md
 docs/PatchUploadMultipartUploadId.md
 docs/PatchUploadMultipartUploadPart.md
 docs/PhysicalLocation.md
+docs/RecordMetricsRequest.md
 docs/RegisterBucketRequest.md
 docs/StartUploadRequest.md
 docs/StartUploadResponse.md
@@ -70,6 +74,9 @@ src/models/head_object_request.rs
 src/models/head_object_response.rs
 src/models/healthcheck_response.rs
 src/models/http_validation_error.rs
+src/models/list_metrics_object.rs
+src/models/list_metrics_request.rs
+src/models/list_metrics_response.rs
 src/models/list_object_request.rs
 src/models/list_parts_request.rs
 src/models/locate_bucket_request.rs
@@ -86,6 +93,7 @@ src/models/patch_upload_is_completed.rs
 src/models/patch_upload_multipart_upload_id.rs
 src/models/patch_upload_multipart_upload_part.rs
 src/models/physical_location.rs
+src/models/record_metrics_request.rs
 src/models/register_bucket_request.rs
 src/models/start_upload_request.rs
 src/models/start_upload_response.rs

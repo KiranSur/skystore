@@ -14,6 +14,7 @@ Method | HTTP request | Description
 [**head_object**](DefaultApi.md#head_object) | **POST** /head_object | Head Object
 [**healthz**](DefaultApi.md#healthz) | **GET** /healthz | Healthz
 [**list_buckets**](DefaultApi.md#list_buckets) | **POST** /list_buckets | List Buckets
+[**list_metrics**](DefaultApi.md#list_metrics) | **POST** /list_metrics | List Metrics
 [**list_multipart_uploads**](DefaultApi.md#list_multipart_uploads) | **POST** /list_multipart_uploads | List Multipart Uploads
 [**list_objects**](DefaultApi.md#list_objects) | **POST** /list_objects | List Objects
 [**list_parts**](DefaultApi.md#list_parts) | **POST** /list_parts | List Parts
@@ -21,6 +22,7 @@ Method | HTTP request | Description
 [**locate_bucket_status**](DefaultApi.md#locate_bucket_status) | **POST** /locate_bucket_status | Locate Bucket Status
 [**locate_object**](DefaultApi.md#locate_object) | **POST** /locate_object | Locate Object
 [**locate_object_status**](DefaultApi.md#locate_object_status) | **POST** /locate_object_status | Locate Object Status
+[**record_metrics**](DefaultApi.md#record_metrics) | **POST** /record_metrics | Record Metrics
 [**register_buckets**](DefaultApi.md#register_buckets) | **POST** /register_buckets | Register Buckets
 [**set_multipart_id**](DefaultApi.md#set_multipart_id) | **PATCH** /set_multipart_id | Set Multipart Id
 [**start_create_bucket**](DefaultApi.md#start_create_bucket) | **POST** /start_create_bucket | Start Create Bucket
@@ -305,6 +307,34 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
+## list_metrics
+
+> crate::models::ListMetricsResponse list_metrics(list_metrics_request)
+List Metrics
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**list_metrics_request** | [**ListMetricsRequest**](ListMetricsRequest.md) |  | [required] |
+
+### Return type
+
+[**crate::models::ListMetricsResponse**](ListMetricsResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
 ## list_multipart_uploads
 
 > Vec<crate::models::MultipartResponse> list_multipart_uploads(list_object_request)
@@ -496,6 +526,34 @@ Name | Type | Description  | Required | Notes
 ### Return type
 
 [**crate::models::ObjectStatus**](ObjectStatus.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## record_metrics
+
+> serde_json::Value record_metrics(record_metrics_request)
+Record Metrics
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**record_metrics_request** | [**RecordMetricsRequest**](RecordMetricsRequest.md) |  | [required] |
+
+### Return type
+
+[**serde_json::Value**](serde_json::Value.md)
 
 ### Authorization
 
